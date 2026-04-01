@@ -1,0 +1,98 @@
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
+import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Usuario } from './entities/usuario.entity';
+
+@Injectable()
+export class UsuariosService {
+  constructor(
+    @InjectRepository(Usuario)
+    private readonly usuariosRepository: Repository<Usuario>,
+  ) {}
+
+  async create(createUsuarioDto: CreateUsuarioDto): Promise<Usuario> {
+    // Validar que al menos uno de los IDs sea proporcionado
+    if (!createUsuarioDto.idEmpleado && !createUsuarioDto.idCliente) {
+      throw new BadRequestException(
+        'Debe proporcionar al menos un idEmpleado o un idCliente',
+      );
+    }
+
+    let usuario = await this.usuariosRepository.findOneBy({
+      email: createUsuarioDto.email.trim(),
+    });
+    if (usuario) throw new ConflictException('El usuario ya existe');
+
+    usuario = new Usuario();
+    usuario.clave = process.env.DEFAULT_PASSWORD ?? '';
+    Object.assign(usuario, createUsuarioDto);
+    return this.usuariosRepository.save(usuario);
+  }
+
+  async findAll(): Promise<Usuario[]> {
+    return this.usuariosRepository.find({
+      relations: { cliente: true },
+      select: {
+        id: true,
+        idEmpleado: true,
+        idCliente: true,
+        rol: true,
+        cliente: { id: true, nombre: true },
+      },
+    });
+  }
+
+  async findOne(id: number): Promise<Usuario> {
+    const usuario = await this.usuariosRepository.findOne({
+      where: { id },
+      relations: { cliente: true },
+      select: {
+        id: true,
+        idEmpleado: true,
+        idCliente: true,
+        rol: true,
+        email: true,
+        cliente: { id: true, nombre: true, celular: true },
+      },
+    });
+    if (!usuario) throw new NotFoundException('El usuario no existe');
+    return usuario;
+  }
+
+  async update(
+    id: number,
+    updateUsuarioDto: UpdateUsuarioDto,
+  ): Promise<Usuario> {
+    const usuario = await this.findOne(id);
+    Object.assign(usuario, updateUsuarioDto);
+    return this.usuariosRepository.save(usuario);
+  }
+
+  async remove(id: number): Promise<Usuario> {
+    const usuario = await this.findOne(id);
+    return this.usuariosRepository.softRemove(usuario);
+  }
+
+  async validate(email: string, clave: string): Promise<Usuario> {
+    const usuarioOk = await this.usuariosRepository.findOne({
+      where: { email },
+      select: ['id', 'idEmpleado', 'idCliente', 'email', 'clave', 'rol'],
+    });
+
+    if (!usuarioOk) throw new NotFoundException('Usuario inexistente');
+
+    if (!(await usuarioOk?.validatePassword(clave))) {
+      throw new UnauthorizedException('Clave incorrecta');
+    }
+
+    return usuarioOk;
+  }
+}

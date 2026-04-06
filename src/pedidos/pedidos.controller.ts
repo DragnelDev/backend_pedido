@@ -44,6 +44,11 @@ export class PedidosController {
     return this.pedidosService.update(+id, updatePedidoDto);
   }
 
+  @Patch(':id/estado')
+  cambiarEstado(@Param('id') id: string, @Body('estado') estado: string) {
+    return this.pedidosService.cambiarEstado(+id, estado);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.pedidosService.remove(+id);

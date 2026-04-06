@@ -6,22 +6,45 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
+import {
+  ApiOperation,
+  ApiConsumes,
+  ApiBody,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { UploadsService } from './uploads.service';
 
-@Controller('uploads') // ← Sin '/' al inicio
+@Controller('uploads')
 export class UploadsController {
-  @Post() // ← Sin ruta adicional, responde a POST /api/v1/uploads
+  constructor(private readonly uploadsService: UploadsService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Subir imagen a Cloudinary' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Archivo de imagen a subir',
+    type: 'multipart/form-data',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'Archivo de imagen (PNG, JPG, etc.)',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Imagen subida exitosamente',
+    schema: { type: 'object', properties: { url: { type: 'string' } } },
+  })
+  @ApiResponse({ status: 400, description: 'Error al subir la imagen' })
   @UseInterceptors(
     FileInterceptor('file', {
-      // ← DEBE coincidir con fd.append('file', file)
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (_req, file, cb) => {
-          const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, unique + extname(file.originalname));
-        },
-      }),
+      storage: memoryStorage(),
       fileFilter: (_req, file, cb) => {
         if (!file.mimetype.startsWith('image/')) {
           console.log('Archivo rechazado, no es imagen');
@@ -32,7 +55,7 @@ export class UploadsController {
       limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
-  upload(@UploadedFile() file: Express.Multer.File) {
+  async upload(@UploadedFile() file: Express.Multer.File) {
     console.log('Archivo recibido en backend:', file);
 
     if (!file) {
@@ -40,10 +63,13 @@ export class UploadsController {
       return { url: null };
     }
 
-    const base = process.env.API_BASE_URL || 'http://localhost:3000';
-    const url = `${base}/uploads/${file.filename}`;
-    console.log('URL generada:', url);
-
-    return { url };
+    try {
+      const result = await this.uploadsService.uploadFile(file);
+      console.log('Resultado de Cloudinary:', result);
+      return { url: result.secure_url };
+    } catch (error) {
+      console.error('Error subiendo a Cloudinary:', error);
+      return { url: null, error: (error as Error).message };
+    }
   }
 }

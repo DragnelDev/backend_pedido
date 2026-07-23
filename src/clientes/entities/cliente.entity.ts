@@ -1,4 +1,3 @@
-import { Pedido } from 'src/pedidos/entities/pedido.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import {
   Column,
@@ -15,16 +14,20 @@ export class Cliente {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column('varchar', { length: 12, name: 'cedula_identidad ' })
+  @Column({
+    name: 'cedula_identidad',
+    type: 'varchar',
+    length: 12,
+  })
   cedulaIdentidad: string;
 
   @Column('varchar', { length: 50 })
   nombre: string;
 
-  @Column('varchar', { length: 50, name: 'apellido_paterno ' })
+  @Column('varchar', { length: 50, name: 'apellido_paterno' })
   apellidoPaterno: string;
 
-  @Column('varchar', { length: 50, name: 'apellido_materno ' })
+  @Column('varchar', { length: 50, name: 'apellido_materno' })
   apellidoMaterno: string;
 
   @Column('varchar', { length: 12 })
@@ -54,7 +57,4 @@ export class Cliente {
 
   @OneToMany(() => Usuario, (usuario) => usuario.cliente)
   usuarios: Usuario[];
-
-  @OneToMany(() => Pedido, (pedido) => pedido.cliente)
-  pedidos: Pedido[];
 }

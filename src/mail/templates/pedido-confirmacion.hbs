@@ -1,7 +1,88 @@
-<h2>Hola {{usuario.nombre}},</h2>
-<p>Tu pedido <b>#{{pedido.id}}</b> está <b>{{pedido.estado}}</b>.</p>
-<ul>
-  <li>Método de pago: {{pedido.metodoPago}}</li>
-  <li>Dirección: {{pedido.direccion}}</li>
-  <li>Total: Bs. {{pedido.total}}</li>
-</ul>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background-color: #fff5f5; color: #4a3e3d; margin: 0; padding: 20px;">
+
+  <div style="max-width: 550px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 15px rgba(214, 150, 150, 0.15); border: 1px solid #ffe3e3;">
+    
+    <!-- Encabezado / Branding -->
+    <div style="background-color: #ffb3c1; padding: 30px 20px; text-align: center;">
+      <!-- Nombre de la marca estilizado -->
+      <h1 style="color: #ffffff; margin: 0; font-family: 'Lucida Sans', 'Arial', sans-serif; font-size: 28px; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+        🍓 Berry Sweet
+      </h1>
+      <p style="color: #ffffff; margin: 5px 0 0 0; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">
+        Pastelería Artesanal
+      </p>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div style="padding: 35px 25px;">
+      <p style="font-size: 17px; margin-top: 0; color: #5c4d4c; line-height: 1.5;">
+        ¡Hola <strong>{{usuario.nombre}}</strong>! ✨
+      </p>
+      
+      <p style="font-size: 15px; line-height: 1.6; color: #705e5d;">
+        Tu pedido ya se está procesando con mucho amor en nuestra cocina. Aquí tienes los detalles de tu dulce elección:
+      </p>
+
+      <!-- Badge de Estado (Estilo Pastel) -->
+      <div style="margin: 25px 0; padding: 15px; background-color: #fff0f3; border-radius: 12px; border: 1px dashed #ffb3c1; text-align: center;">
+        <span style="font-size: 12px; text-transform: uppercase; color: #ff758f; font-weight: bold; display: block; letter-spacing: 1px; margin-bottom: 4px;">
+          Estado de tu pedido
+        </span>
+        <span style="font-size: 20px; color: #c9184a; font-weight: bold;">
+          🧁 {{pedido.estado}}
+        </span>
+      </div>
+
+      <h3 style="font-size: 15px; color: #5c4d4c; margin-top: 30px; border-bottom: 2px solid #fff0f3; padding-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+        Resumen de la orden
+      </h3>
+
+      <!-- Tabla de Detalles -->
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; color: #705e5d;">
+        <tr>
+          <td style="padding: 10px 0; font-weight: bold; width: 35%; color: #5c4d4c;">Código de Pedido:</td>
+          <td style="padding: 10px 0; font-family: monospace; font-size: 15px; font-weight: bold;">#{{pedido.id}}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 0; font-weight: bold; color: #5c4d4c;">Método de pago:</td>
+          <td style="padding: 10px 0;">{{pedido.metodoPago}}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 0; font-weight: bold; color: #5c4d4c; vertical-align: top;">Dirección de envío:</td>
+          <td style="padding: 10px 0; line-height: 1.4;">{{pedido.direccion}}</td>
+        </tr>
+        <!-- Total Destacado -->
+        <tr style="font-size: 17px;">
+          <td style="padding: 18px 0 8px 0; font-weight: bold; border-top: 1px solid #ffe3e3; color: #5c4d4c;">Total:</td>
+          <td style="padding: 18px 0 8px 0; font-weight: bold; color: #c9184a; border-top: 1px solid #ffe3e3;">
+            Bs. {{pedido.total}}
+          </td>
+        </tr>
+      </table>
+
+      <!-- Botón de Acción -->
+      <div style="text-align: center; margin-top: 35px;">
+        <a href="https://tusitio.com/pedidos/{{pedido.id}}" style="background-color: #ff758f; color: #ffffff; padding: 14px 28px; text-align: center; text-decoration: none; display: inline-block; border-radius: 25px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 10px rgba(255, 117, 143, 0.3); transition: background-color 0.2s;">
+          Ver el estado de mis tortas 🍰
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Pie de página / Despedida -->
+    <div style="background-color: #fff0f3; padding: 20px; text-align: center; border-top: 1px solid #ffe3e3;">
+      <p style="margin: 0; font-size: 12px; color: #a38f8e; line-height: 1.4;">
+        ¡Gracias por endulzar tu día con nosotros!<br>
+        Si tienes alguna duda con tu pedido, puedes responder directamente a este correo.
+      </p>
+    </div>
+
+  </div>
+
+</body>
+</html>

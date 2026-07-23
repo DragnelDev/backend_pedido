@@ -30,30 +30,21 @@ export class ProductosService {
   }
 
   async findAll(parametro?: string): Promise<Producto[]> {
-    const searchTerm = parametro ? parametro.trim() : ''; // Si no hay término de búsqueda (o es solo espacios), no aplicamos la cláusula WHERE de búsqueda.
+    const searchTerm = parametro ? parametro.trim() : '';
 
-    let whereCondition = {};
+    let whereCondition: any = { fechaEliminacion: IsNull() };
 
     if (searchTerm.length > 0) {
       // Aplicamos el filtro si hay un término
       whereCondition = [
-        { nombre: ILike(`%${searchTerm}%`) }, // Busca en nombre
-        { descripcion: ILike(`%${searchTerm}%`) }, // Busca también en descripción
+        { nombre: ILike(`%${searchTerm}%`), fechaEliminacion: IsNull() },
+        { descripcion: ILike(`%${searchTerm}%`), fechaEliminacion: IsNull() },
       ];
-    } // Usamos la condición de filtro (o el objeto vacío si no hay búsqueda)
+    }
+
     return this.productosRepository.find({
-      where: whereCondition, // <-- Usa la condición de búsqueda
-      relations: { categoria: true },
-      select: {
-        id: true,
-        idCategoria: true,
-        nombre: true,
-        descripcion: true,
-        precio: true,
-        stock: true,
-        imagenUrl: true,
-        categoria: { id: true, nombre: true },
-      },
+      where: whereCondition,
+      relations: ['categoria'],
       order: { nombre: 'ASC' },
     });
   }

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
+  IsDate,
   IsDefined,
   IsInt,
   IsNumber,
@@ -8,6 +9,7 @@ import {
   IsString,
   MaxLength,
   Min,
+  MinDate,
 } from 'class-validator';
 
 export class CreatePedidoDto {
@@ -17,7 +19,7 @@ export class CreatePedidoDto {
   })
   @IsDefined({ message: 'El campo id del Usuario debe estar definido' })
   @IsInt({ message: 'El campo id del Usuario debe ser numérico' })
-  idUsuario: number;
+  idUsuario: number | undefined;
 
   @ApiProperty({
     description: 'Fecha de entrega del pedido',
@@ -25,21 +27,11 @@ export class CreatePedidoDto {
   })
   @IsDefined({ message: 'El campo fechaEntrega debe estar definido' })
   @Transform(({ value }): Date => new Date(value as string | number | Date))
-  fechaEntrega: Date;
-
-  /*@ApiProperty({
-    description: 'Tipo de entrega de pedido',
-    example: 'a domicilio',
+  @IsDate({ message: 'La fecha de entrega debe ser una fecha válida' })
+  @MinDate(new Date(), {
+    message: 'La fecha de entrega debe ser posterior a la fecha actual.',
   })
-  @IsDefined({ message: 'El campo tipoEntrega debe estar definido' })
-  @IsString({ message: 'El campo tipoEntrega debe ser una cadena' })
-  @MaxLength(20, {
-    message: 'El campo tipoEntrega no debe exceder los 20 caracteres',
-  })
-  @Transform(({ value }): string =>
-    typeof value === 'string' ? value.trim() : value,
-  )
-  tipoEntrega: string;*/
+  fechaEntrega: Date | undefined;
 
   @ApiProperty({
     description: 'Monto total del pedido',
@@ -48,7 +40,7 @@ export class CreatePedidoDto {
   @IsDefined({ message: 'El campo total debe estar definido' })
   @IsNumber({}, { message: 'El campo total debe ser numérico' })
   @Min(0, { message: 'El campo total no puede ser negativo' })
-  total: number;
+  total: number | undefined;
 
   @ApiProperty({
     description: 'Estado del pedido',
@@ -105,6 +97,22 @@ export class CreatePedidoDto {
     typeof value === 'string' ? value.trim() : value,
   )
   tipoEnvio?: string;
+
+  @ApiProperty({
+    description: 'Latitud de la dirección de envío',
+    example: 19.4326,
+  })
+  @IsOptional()
+  @IsNumber({}, { message: 'El campo latitud debe ser numérico' })
+  latitud?: number;
+
+  @ApiProperty({
+    description: 'Longitud de la dirección de envío',
+    example: -99.1332,
+  })
+  @IsOptional()
+  @IsNumber({}, { message: 'El campo longitud debe ser numérico' })
+  longitud?: number;
 
   @ApiProperty({
     description: 'Método de pago del pedido',

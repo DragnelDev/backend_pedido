@@ -6,8 +6,8 @@ export class CreateCategoriaDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo nombre no debe de estar vacio' })
   @IsString({ message: 'El campo nombre debe de ser una cadena' })
-  @MaxLength(50, {
-    message: 'El campo nombre debe de ser menor a 200 caracteres',
+  @MaxLength(80, {
+    message: 'El campo nombre debe de ser menor a 80 caracteres',
   })
   @Transform(({ value }): string | undefined =>
     typeof value === 'string' ? value.trim() : value,

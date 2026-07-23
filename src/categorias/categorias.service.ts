@@ -7,7 +7,7 @@ import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { Categoria } from './entities/categoria.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriasService {
@@ -27,7 +27,10 @@ export class CategoriasService {
   }
 
   async findAll(): Promise<Categoria[]> {
-    return this.categoriasRepository.find();
+    return this.categoriasRepository.find({
+      where: { fechaEliminacion: IsNull() },
+      order: { nombre: 'ASC' },
+    });
   }
 
   async findOne(id: number): Promise<Categoria> {

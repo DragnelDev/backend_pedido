@@ -36,6 +36,16 @@ export class CreateUsuarioDto {
   @Validate(AtLeastOneIdConstraint)
   readonly idCliente?: number;
 
+  @IsOptional()
+  @IsString({ message: 'El campo imagen_url debe ser de tipo cadena' })
+  @MaxLength(500, {
+    message: 'El campo imagen_url no debe superar los 500 caracteres',
+  })
+  @Transform(({ value }): string | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
+  readonly imagenUrl?: string;
+
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo email es obligatorio' })
   @IsString({ message: 'El campo email debe ser de tipo cadena' })

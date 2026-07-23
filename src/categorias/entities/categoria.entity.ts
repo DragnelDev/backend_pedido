@@ -9,12 +9,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('categoria')
+@Entity('categorias')
 export class Categoria {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 80 })
   nombre: string;
 
   @Column('varchar', { length: 200, nullable: true })

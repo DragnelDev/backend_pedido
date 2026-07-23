@@ -18,7 +18,7 @@ export class Producto {
   @Column({ nullable: true, name: 'id_categoria' })
   idCategoria: number;
 
-  @Column()
+  @Column('varchar', { length: 80 })
   nombre: string;
 
   @Column('text', { nullable: true })

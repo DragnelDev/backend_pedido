@@ -19,7 +19,7 @@ export class MailService {
     await this.mailer.sendMail({
       to: payload.para,
       subject: `Confirmación de pedido #${payload.pedido.id}`,
-      template: 'pedido-confirmacion', // 👈 sin "./" ni ".hbs"
+      template: 'pedido-confirmacion', // sin "./" ni ".hbs"
       context: payload,
     });
   }

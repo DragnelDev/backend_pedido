@@ -21,10 +21,9 @@ import { MailService } from './mail.service';
         from: process.env.MAIL_FROM,
       },
       template: {
-        // 👇 En runtime (dist) __dirname apunta a dist/src/mail
-        // con el assets-copy (paso 2) esta ruta funciona
-        dir: join(__dirname, 'templates'),
-        adapter: new HandlebarsAdapter(), // ← AQUI VA EL ADAPTER
+        // Las plantillas están en dist/mail/templates después del build
+        dir: join(process.cwd(), 'dist', 'mail', 'templates'),
+        adapter: new HandlebarsAdapter(), // AQUI VA EL ADAPTER
         options: { strict: true }, // si te sigue dando 500, pon false
       },
     }),

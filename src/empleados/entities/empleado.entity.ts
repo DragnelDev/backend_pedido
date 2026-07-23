@@ -14,19 +14,19 @@ export class Empleado {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column('varchar', { length: 12, name: 'cedula_identidad ' })
+  @Column('varchar', { length: 12, name: 'cedula_identidad' })
   cedulaIdentidad: string;
 
   @Column('varchar', { length: 50 })
   nombre: string;
 
-  @Column('varchar', { length: 50, name: 'apellido_paterno ' })
+  @Column('varchar', { length: 50, name: 'apellido_paterno' })
   apellidoPaterno: string;
 
-  @Column('varchar', { length: 50, name: 'apellido_materno ' })
+  @Column('varchar', { length: 50, name: 'apellido_materno' })
   apellidoMaterno: string;
 
-  @Column({ type: 'date', name: 'fecha_nacimiento ' })
+  @Column({ type: 'date', name: 'fecha_nacimiento' })
   fechaNacimiento: Date;
 
   @Column('varchar', { length: 80 })
@@ -38,7 +38,7 @@ export class Empleado {
   @Column('varchar', { length: 40 })
   email: string;
 
-  @Column('date', { name: 'fecha_ingreso ' })
+  @Column('date', { name: 'fecha_ingreso' })
   fechaIngreso: Date;
 
   @Column('varchar', { length: 15 })

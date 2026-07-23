@@ -12,29 +12,53 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // src/auth/auth.service.ts
   async login(authLoginDto: AuthLoginDto): Promise<any> {
     const { email, clave } = authLoginDto;
-    const usuarioOk = await this.usuarioService.validate(email, clave);
 
-    // ⬇️ incluir rol (y email) en el JWT
+    // 1. Desestructuramos la respuesta del servicio de usuarios para separar el "usuario" de la bandera
+    const { usuario, debeCambiarClave } = await this.usuarioService.validate(
+      email,
+      clave,
+    );
+
+    // 2. Armamos el payload del JWT utilizando el objeto "usuario" extraído
+    // Obtenemos nombre y apellidos según el rol (empleado o cliente)
+    let nombre = '';
+    let apellidos = '';
+    
+    if (usuario.empleado) {
+      nombre = usuario.empleado.nombre || '';
+      apellidos = `${usuario.empleado.apellidoPaterno || ''} ${usuario.empleado.apellidoMaterno || ''}`.trim();
+    } else if (usuario.cliente) {
+      nombre = usuario.cliente.nombre || '';
+    }
+
     const payload = {
-      sub: usuarioOk.id,
-      rol: usuarioOk.rol,
-      email: usuarioOk.email,
+      id: usuario.id,
+      sub: usuario.id,
+      rol: usuario.rol,
+      email: usuario.email,
+      nombre,
+      apellidos,
+      imagenUrl: usuario.imagenUrl || '',
     };
     const access_token = await this.getAccessToken(payload);
 
-    // ⬇️ no devuelvas 'clave'
+    // 3. Construimos el objeto seguro del usuario para el frontend
     const usuarioSafe = {
-      id: usuarioOk.id,
-      idEmpleado: usuarioOk.idEmpleado,
-      idCliente: usuarioOk.idCliente,
-      email: usuarioOk.email,
-      rol: usuarioOk.rol,
+      id: usuario.id,
+      idEmpleado: usuario.idEmpleado,
+      idCliente: usuario.idCliente,
+      email: usuario.email,
+      rol: usuario.rol,
     };
 
-    return { ...usuarioSafe, access_token };
+    // 4. Retornamos todo, incluyendo la bandera 'debeCambiarClave' y el objeto 'user' estructurado
+    return {
+      user: usuarioSafe,
+      access_token,
+      debeCambiarClave,
+    };
   }
 
   async getAccessToken(payload: JwtPayload) {

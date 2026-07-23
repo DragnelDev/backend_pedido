@@ -44,7 +44,40 @@ export class Pedido {
   @Column('varchar', { length: 255, name: 'referencia', nullable: true })
   referencia?: string;
 
-  @Column('varchar', { length: 50, default: 'pendiente', name: 'estado' })
+  @Column('decimal', {
+    precision: 10,
+    scale: 2,
+    default: 0,
+    name: 'total',
+  })
+  total: number;
+
+  @Column('varchar', {
+    length: 20,
+    nullable: true,
+    name: 'metodo_pago',
+  })
+  metodoPago?: string;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    name: 'latitud',
+    default: 0,
+  })
+  latitud?: number;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    name: 'longitud',
+    default: 0,
+  })
+  longitud?: number;
+
+  @Column({ type: 'varchar', length: 50, default: 'pendiente', name: 'estado' })
   estado: string;
 
   // Columnas de auditoria
@@ -56,10 +89,6 @@ export class Pedido {
 
   @DeleteDateColumn({ name: 'fecha_eliminacion' })
   fechaEliminacion: Date;
-
-  @ManyToOne(() => Cliente, (cliente) => cliente.pedidos)
-  @JoinColumn({ name: 'id_cliente', referencedColumnName: 'id' })
-  cliente: Cliente;
 
   @ManyToOne(() => Usuario, (usuario) => usuario.pedidos)
   @JoinColumn({ name: 'id_usuario', referencedColumnName: 'id' })

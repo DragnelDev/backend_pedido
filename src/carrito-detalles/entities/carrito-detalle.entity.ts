@@ -25,6 +25,9 @@ export class CarritoDetalle {
   @Column('integer')
   cantidad: number;
 
+  @Column('varchar', { name: 'dedicatoria', length: 255, nullable: true })
+  dedicatoria: string;
+
   /*@Column('decimal', {
     precision: 12,
     scale: 2,

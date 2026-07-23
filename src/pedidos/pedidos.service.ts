@@ -41,15 +41,30 @@ export class PedidosService {
   }
 
   async findAll(): Promise<Pedido[]> {
-    return this.pedidosRepository.find({
-      relations: { usuario: true },
-      select: {
-        id: true,
-        estado: true,
-        fechaCreacion: true,
-        usuario: { id: true, idCliente: true /*email: true*/ },
+    const pedidos = await this.pedidosRepository.find({
+      relations: {
+        usuario: { cliente: true },
+        detallePedido: { producto: true },
+        pagos: true,
       },
       order: { id: 'ASC' },
+    });
+
+    return pedidos.map((pedido) => {
+      // Asegurar que los arrays existan
+      if (!pedido.detallePedido) pedido.detallePedido = [];
+      if (!pedido.pagos) pedido.pagos = [];
+
+      const total = (pedido.detallePedido || []).reduce(
+        (sum, detalle) => sum + detalle.cantidad * detalle.precioUnitario,
+        0,
+      );
+      const metodoPago = pedido.pagos?.[0]?.metodo ?? 'No especificado';
+      return {
+        ...pedido,
+        total,
+        metodoPago,
+      } as any;
     });
   }
 
@@ -57,7 +72,7 @@ export class PedidosService {
     const pedido = await this.pedidosRepository.findOne({
       where: { id },
       relations: {
-        usuario: true,
+        usuario: { cliente: true },
         // trae los detalles + el producto (nombre, imagen, precio, etc.)
         detallePedido: { producto: true },
         // trae los pagos asociados (metodo, estado, comprobante, maskedCard…)
@@ -70,8 +85,18 @@ export class PedidosService {
 
     if (!pedido) throw new NotFoundException('El pedido no existe');
 
+    // Asegurar que detallePedido siempre sea un array
+    if (!pedido.detallePedido) {
+      pedido.detallePedido = [];
+    }
+
+    // Asegurar que pagos siempre sea un array
+    if (!pedido.pagos) {
+      pedido.pagos = [];
+    }
+
     // Calcular total desde detalles del pedido
-    const total = pedido.detallePedido.reduce(
+    const total = (pedido.detallePedido || []).reduce(
       (sum, detalle) => sum + detalle.cantidad * detalle.precioUnitario,
       0,
     );

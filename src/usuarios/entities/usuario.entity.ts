@@ -28,11 +28,20 @@ export class Usuario {
   @Column('integer', { name: 'id_cliente', nullable: true })
   idCliente: number;
 
+  @Column({ name: 'imagen_url', type: 'varchar', length: 500, nullable: true })
+  imagenUrl: string;
+
   @Column('varchar', { length: 100 })
   email: string;
 
-  @Column('varchar', { length: 100 })
+  @Column('varchar', { length: 255, nullable: true })
   clave: string;
+
+  @Column({
+    name: 'fecha_cambio_clave',
+    default: null,
+  })
+  fechaCambioClave: Date;
 
   @Column({
     type: 'varchar',
@@ -40,9 +49,6 @@ export class Usuario {
     enum: ['EMPLEADO', 'CLIENTE'],
   })
   rol: string;
-
-  /*@Column()
-  ultimoLogin: Date;*/
 
   @Column('boolean', { name: 'activo', default: true })
   activo: boolean;
@@ -75,8 +81,11 @@ export class Usuario {
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
-    const salt = await genSalt();
-    this.clave = await hash(this.clave, salt);
+    // Solo hashear si la contraseña no está vacía y no comienza con $2 (ya hasheada)
+    if (this.clave && !this.clave.startsWith('$2')) {
+      const salt = await genSalt();
+      this.clave = await hash(this.clave, salt);
+    }
   }
 
   async validatePassword(plainPassword: string): Promise<boolean> {

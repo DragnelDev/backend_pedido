@@ -17,6 +17,8 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { CambiarClaveDto } from './dto/cambiar-clave.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -30,6 +32,25 @@ export class UsuariosController {
   @Get()
   findAll() {
     return this.usuariosService.findAll();
+  }
+
+  // Perfil del usuario autenticado (GET /usuarios/perfil, PATCH /usuarios/perfil)
+  // Declarado antes de ':id' para que 'perfil' no sea interpretado como un id.
+  @ApiBearerAuth()
+  @Get('perfil')
+  @UseGuards(JwtAuthGuard)
+  obtenerPerfil(@CurrentUser('id') idUsuario: number) {
+    return this.usuariosService.findOne(idUsuario);
+  }
+
+  @ApiBearerAuth()
+  @Patch('perfil')
+  @UseGuards(JwtAuthGuard)
+  actualizarPerfil(
+    @CurrentUser('id') idUsuario: number,
+    @Body() updateUsuarioDto: UpdateUsuarioDto,
+  ) {
+    return this.usuariosService.update(idUsuario, updateUsuarioDto);
   }
 
   @Get(':id')

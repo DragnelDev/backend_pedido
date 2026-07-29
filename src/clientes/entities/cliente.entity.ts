@@ -1,3 +1,5 @@
+import { Direccion } from 'src/direcciones/entities/direccion.entity';
+import { Favorito } from 'src/favoritos/entities/favorito.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import {
   Column,
@@ -57,4 +59,12 @@ export class Cliente {
 
   @OneToMany(() => Usuario, (usuario) => usuario.cliente)
   usuarios: Usuario[];
+
+  // Direcciones de entrega guardadas por el cliente (relación 1:N)
+  @OneToMany(() => Direccion, (direccion) => direccion.cliente)
+  direcciones: Direccion[];
+
+  // Productos guardados como favoritos por el cliente (relación N:M)
+  @OneToMany(() => Favorito, (favorito) => favorito.cliente)
+  favoritos: Favorito[];
 }

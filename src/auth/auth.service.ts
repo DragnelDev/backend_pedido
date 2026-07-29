@@ -25,10 +25,11 @@ export class AuthService {
     // Obtenemos nombre y apellidos según el rol (empleado o cliente)
     let nombre = '';
     let apellidos = '';
-    
+
     if (usuario.empleado) {
       nombre = usuario.empleado.nombre || '';
-      apellidos = `${usuario.empleado.apellidoPaterno || ''} ${usuario.empleado.apellidoMaterno || ''}`.trim();
+      apellidos =
+        `${usuario.empleado.apellidoPaterno || ''} ${usuario.empleado.apellidoMaterno || ''}`.trim();
     } else if (usuario.cliente) {
       nombre = usuario.cliente.nombre || '';
     }

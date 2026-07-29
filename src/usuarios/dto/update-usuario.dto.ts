@@ -1,4 +1,11 @@
-import { IsOptional, IsObject, ValidateNested, IsNumber, IsString, MaxLength } from 'class-validator';
+import {
+  IsOptional,
+  IsObject,
+  ValidateNested,
+  IsNumber,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
 export class UpdateClienteDataDto {

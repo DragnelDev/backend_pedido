@@ -11,13 +11,17 @@ import { CarritosModule } from './carritos/carritos.module';
 import { CategoriasModule } from './categorias/categorias.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { DetallePedidosModule } from './detalle-pedidos/detalle-pedidos.module';
+import { DireccionesModule } from './direcciones/direcciones.module';
 import { EmpleadosModule } from './empleados/empleados.module';
+import { FavoritosModule } from './favoritos/favoritos.module';
 import { MailModule } from './mail/mail.module';
 import { PagosModule } from './pagos/pagos.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { ProductosModule } from './productos/productos.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { ConfiguracionModule } from './configuracion/configuracion.module';
+import { ContabilidadModule } from './contabilidad/contabilidad.module';
 
 @Module({
   imports: [
@@ -47,9 +51,13 @@ import { UsuariosModule } from './usuarios/usuarios.module';
     DetallePedidosModule,
     CarritosModule,
     CarritoDetallesModule,
+    DireccionesModule,
+    FavoritosModule,
     UploadsModule,
     MailModule,
     AuthModule,
+    ConfiguracionModule,
+    ContabilidadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

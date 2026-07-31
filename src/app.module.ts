@@ -22,6 +22,9 @@ import { UploadsModule } from './uploads/uploads.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { ConfiguracionModule } from './configuracion/configuracion.module';
 import { ContabilidadModule } from './contabilidad/contabilidad.module';
+import { InsumosModule } from './insumos/insumos.module';
+import { RecetasModule } from './recetas/recetas.module';
+import { CocinaModule } from './cocina/cocina.module';
 
 @Module({
   imports: [
@@ -53,11 +56,14 @@ import { ContabilidadModule } from './contabilidad/contabilidad.module';
     CarritoDetallesModule,
     DireccionesModule,
     FavoritosModule,
+    ContabilidadModule,
+    ConfiguracionModule,
+    InsumosModule,
+    RecetasModule,
+    CocinaModule,
     UploadsModule,
     MailModule,
     AuthModule,
-    ConfiguracionModule,
-    ContabilidadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

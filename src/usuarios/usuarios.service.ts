@@ -172,6 +172,15 @@ export class UsuariosService {
     return this.usuariosRepository.softRemove(usuario);
   }
 
+  // Usado por el login con Google: busca por email sin lanzar excepción
+  // si no existe, para poder decidir entre "iniciar sesión" o "auto-registrar".
+  async findByEmail(email: string): Promise<Usuario | null> {
+    return this.usuariosRepository.findOne({
+      where: { email: email.trim() },
+      relations: { cliente: true, empleado: true },
+    });
+  }
+
   async validate(
     email: string,
     clave: string,

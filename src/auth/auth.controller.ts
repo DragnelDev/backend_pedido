@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthLoginDto } from './dto/auth-login.dto';
+import { GoogleLoginDto } from './dto/google-login.dto';
 
 @ApiTags('auth')
 @ApiBearerAuth()
@@ -13,5 +14,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() authLoginDto: AuthLoginDto): Promise<any> {
     return this.authService.login(authLoginDto);
+  }
+
+  @Post('google')
+  @HttpCode(HttpStatus.OK)
+  async loginWithGoogle(@Body() googleLoginDto: GoogleLoginDto): Promise<any> {
+    return this.authService.loginWithGoogle(googleLoginDto.idToken);
   }
 }

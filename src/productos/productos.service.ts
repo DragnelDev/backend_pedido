@@ -93,18 +93,17 @@ export class ProductosService {
     idProducto: number,
     cantidad: number,
   ): Promise<Producto> {
-    const producto = await this.productosRepository.findOneBy({
-      id: idProducto,
-    });
+    const resultado = await this.productosRepository.increment(
+      { id: idProducto, fechaEliminacion: IsNull() },
+      'stock',
+      cantidad,
+    );
 
-    if (!producto) {
+    if (!resultado.affected) {
       throw new NotFoundException('El producto no existe');
     }
 
-    // sumamos la cantidad comprada al stock actual
-    producto.stock = (producto.stock ?? 0) + cantidad;
-
-    return this.productosRepository.save(producto);
+    return this.findOne(idProducto);
   }
 
   async disminuirStock(

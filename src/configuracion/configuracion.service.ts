@@ -38,9 +38,21 @@ export class ConfiguracionService {
 
     Object.assign(configuracion, {
       ...dto,
-      // Merge superficial para no perder sub-campos no enviados en la petición
+      // Merge por método para conservar los campos no enviados.
       metodosPago: dto.metodosPago
-        ? { ...configuracion.metodosPago, ...dto.metodosPago }
+        ? {
+            ...configuracion.metodosPago,
+            ...dto.metodosPago,
+            qr: { ...configuracion.metodosPago.qr, ...dto.metodosPago.qr },
+            transferencia: {
+              ...configuracion.metodosPago.transferencia,
+              ...dto.metodosPago.transferencia,
+            },
+            efectivo: {
+              ...configuracion.metodosPago.efectivo,
+              ...dto.metodosPago.efectivo,
+            },
+          }
         : configuracion.metodosPago,
     });
 

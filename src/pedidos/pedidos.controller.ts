@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ForbiddenException,
   UseGuards,
   Request,
 } from '@nestjs/common';
@@ -13,10 +14,25 @@ import { PedidosService } from './pedidos.service';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { RegistrarVentaEmpleadoDto } from './dto/registrar-venta-empleado.dto';
 
 @Controller('pedidos')
 export class PedidosController {
   constructor(private readonly pedidosService: PedidosService) {}
+
+  @Post('venta-empleado')
+  @UseGuards(JwtAuthGuard)
+  registrarVentaEmpleado(
+    @CurrentUser() usuario: Usuario,
+    @Body() dto: RegistrarVentaEmpleadoDto,
+  ) {
+    if (!usuario.idEmpleado) {
+      throw new ForbiddenException('Solo el personal puede registrar ventas');
+    }
+    return this.pedidosService.registrarVentaEmpleado(usuario.id, dto);
+  }
 
   @Post()
   create(@Body() createPedidoDto: CreatePedidoDto) {

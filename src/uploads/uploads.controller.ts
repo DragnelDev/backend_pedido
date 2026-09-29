@@ -23,8 +23,11 @@ export class UploadsController {
         },
       }),
       fileFilter: (_req, file, cb) => {
-        if (!file.mimetype.startsWith('image/')) {
-          console.log('Archivo rechazado, no es imagen');
+        if (
+          !file.mimetype.startsWith('image/') &&
+          file.mimetype !== 'application/pdf'
+        ) {
+          console.log('Archivo rechazado, formato no permitido');
           return cb(null, false);
         }
         cb(null, true);

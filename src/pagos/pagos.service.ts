@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Pago } from './entities/pago.entity';
+import { Pedido } from 'src/pedidos/entities/pedido.entity';
 import { CreatePagoDto } from './dto/create-pago.dto';
 import { UpdatePagoDto } from './dto/update-pago.dto';
 
@@ -84,6 +85,16 @@ export class PagosService {
   async update(id: number, dto: UpdatePagoDto): Promise<Pago> {
     const pago = await this.findOne(id);
     Object.assign(pago, dto);
+
+    if (dto.estado === 'rechazado' && pago.pedido) {
+      return this.pagosRepository.manager.transaction(async (manager) => {
+        await manager.save(pago);
+        await manager.update(Pedido, pago.idPedido, { estado: 'cancelado' });
+        pago.pedido.estado = 'cancelado';
+        return pago;
+      });
+    }
+
     return this.pagosRepository.save(pago);
   }
 

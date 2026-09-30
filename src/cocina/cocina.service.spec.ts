@@ -93,6 +93,9 @@ describe('CocinaService', () => {
 
     await service.cambiarEstado(7, 'listo');
 
+    expect(findOneEnTransaccion.mock.calls[0]?.[1]).toMatchObject({
+      lock: { mode: 'pessimistic_write', tables: ['pedidos'] },
+    });
     expect(producto.stock).toBe(3);
     expect(pedido.estado).toBe('listo');
   });

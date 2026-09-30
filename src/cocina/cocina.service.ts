@@ -98,7 +98,7 @@ export class CocinaService {
       const pedido = await manager.findOne(Pedido, {
         where: { id: idPedido },
         relations: { detallePedido: true, pagos: true },
-        lock: { mode: 'pessimistic_write' },
+        lock: { mode: 'pessimistic_write', tables: ['pedidos'] },
       });
       if (!pedido) throw new NotFoundException('El pedido no existe');
 
